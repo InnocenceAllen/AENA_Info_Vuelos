@@ -1,7 +1,15 @@
+import requests
 import constants
 import crawler
+from bs4 import BeautifulSoup
 
-infovuelosUrl =  constants.LOCAL_URL
+def getContent(url):
+    content = requests.get(url).content
+    return BeautifulSoup(content, "html.parser")
+
+def getLocalContent(filename):
+    fileHandler = open(filename, encoding="utf8")
+    return BeautifulSoup(fileHandler, "html.parser")
 
 def get_airports(soup):
     airports = []
@@ -12,16 +20,27 @@ def get_airports(soup):
     airports.pop(0)
     return airports
 
-def getDeparturesUrl(urlBase, airportCode):
-    return urlBase + constants.DEPARTURES + airportCode
+def getDepartures(airportCode):
+    return crawler.getContent(constants.AENA_INFOVUELOS_URL + constants.DEPARTURES + airportCode)
 
-def getArrivalsUrl(urlBase, airportCode):
-    return urlBase + constants.ARRIVALS + airportCode
+def getArrivals(airportCode):
+    return crawler.getContent(constants.AENA_INFOVUELOS_URL + constants.ARRIVALS + airportCode)
 
-def get_flights(url):
-    return
-
-
-soup = crawler.getLocalContent(infovuelosUrl)
+soup = BeautifulSoup(crawler.getLocalContent(constants.LOCAL_INFOVUELOS_URL), "html.parser")
 airports = get_airports(soup)
-print(airports)
+code = airports[0][0]
+
+soup = BeautifulSoup(crawler.getLocalContent(constants.LOCAL_SAMPLE_DEPARTURES), "html.parser")
+
+flightResultsTag = soup.find(id="flightResults")
+tables = flightResultsTag.findAll("table")
+tableIndex = 0
+for table in tables:
+    when = table.caption.text.split(",")[-1]
+    print(when)
+    rows = table.find("tbody").find_all("tr")
+    for row in rows:
+        flightNumer = row.a.text
+        print(flightNumer)
+
+
