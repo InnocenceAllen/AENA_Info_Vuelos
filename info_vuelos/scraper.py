@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 
 
 class FlightLine:
-    def __init__(self, hora, destino, vuelo,cia,terminal):
+    def __init__(self,airportCode, hora, destino, vuelo,cia,terminal):
+        self.airportCode = airportCode.replace("\n", "").strip()
         self.hora = hora.replace("\n","").strip()
         self.destino = destino.replace("\n","").strip()
         self.vuelo = vuelo.replace("\n","").strip()
@@ -16,7 +17,7 @@ class FlightLine:
 
     def __str__(self):
 
-        return self.hora+";"+self.destino+";"+self.vuelo+";"+self.cia+";"+self.terminal
+        return airportCode+";"+self.hora+";"+self.destino+";"+self.vuelo+";"+self.cia+";"+self.terminal
 
 
 def getContent(url):
@@ -50,34 +51,40 @@ def getArrivals(airportCode):
 soup = BeautifulSoup(crawler.getLocalContent(constants.LOCAL_INFOVUELOS_URL), "html.parser")
 airports = get_airports(soup)
 code = airports[0][0]
-
-soup = BeautifulSoup(crawler.getLocalContent(constants.LOCAL_SAMPLE_DEPARTURES), "html.parser")
-
-flightResultsTag = soup.find(id="flightResults")
-tables = flightResultsTag.findAll("table")
-tableIndex = 0
 flightLines=[]
-for table in tables:
-    '''when = table.caption.text.split(",")[-1]
-    print(when)'''
-    rows = table.find("tbody").find_all("tr")
-    for row in rows:
-        flightNumer = row.a.text
+for airport in airports:
+    airportCode=airport[0]
+    print(airportCode)
+    soup = BeautifulSoup(getDepartures(airportCode))
 
-        '''hora=cleanhtml(str(row.find(headers="hora_0")))
-        destino = cleanhtml(str(row.find(headers="destino_0")))'''
-        hora = cleanhtml(str(row.find(headers=re.compile(constants.HORA))))
-        destino = cleanhtml(str(row.find(headers=re.compile(constants.DESTINO))))
-        cia = cleanhtml(str(row.find(headers=re.compile(constants.CIA))))
-        terminal = cleanhtml(str(row.find(headers=re.compile(constants.TERMINAL))))
+    flightResultsTag = soup.find(id="flightResults")
+    try:
+        tables = flightResultsTag.findAll("table")
+    except:
+        break;#hay que revisar los que fallan
+    tableIndex = 0
+
+    for table in tables:
+        '''when = table.caption.text.split(",")[-1]
+        print(when)'''
+        rows = table.find("tbody").find_all("tr")
+        for row in rows:
+            flightNumer = row.a.text
+
+            '''hora=cleanhtml(str(row.find(headers="hora_0")))
+            destino = cleanhtml(str(row.find(headers="destino_0")))'''
+            hora = cleanhtml(str(row.find(headers=re.compile(constants.HORA))))
+            destino = cleanhtml(str(row.find(headers=re.compile(constants.DESTINO))))
+            cia = cleanhtml(str(row.find(headers=re.compile(constants.CIA))))
+            terminal = cleanhtml(str(row.find(headers=re.compile(constants.TERMINAL))))
 
 
 
-        flightLines.append(FlightLine(hora,destino,flightNumer,cia,terminal))
-        '''hora=soup.find_all(headers="hora_1")'''
-        print("--------------------------------")
-        print(hora +""+destino+""+ flightNumer+""+cia+""+terminal)
-        print("--------------------------------")
-utils.createCSV("test.csv", flightLines)
+            flightLines.append(FlightLine(airportCode,hora,destino,flightNumer,cia,terminal))
+            '''hora=soup.find_all(headers="hora_1")'''
+            print("--------------------------------")
+            print(hora +""+destino+""+ flightNumer+""+cia+""+terminal)
+            print("--------------------------------")
+    utils.createCSV("test2.csv", flightLines)
 
 
