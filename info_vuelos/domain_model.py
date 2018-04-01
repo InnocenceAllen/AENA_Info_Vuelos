@@ -15,7 +15,7 @@ class Airport:
         return hash(self.code)
 
 class Flight:
-    def __init__(self, date, ueriríatime, flight_number, origin, destiny, company, terminal, url):
+    def __init__(self, date, time, flight_number, origin, destiny, company, terminal, url):
         self.date = date
         self.time = time
         self.flightNumber = flight_number
