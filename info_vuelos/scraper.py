@@ -1,49 +1,64 @@
-from info_vuelos.domain_model import Flight, Airport, FlightSchedule
+from info_vuelos.domain_model import Flight, Airport, FlightSchedule, FlightInfoMode, FlightType
 from info_vuelos import util
 
 def get_airports(soup):
     airports = []
     origin = soup.find(id="origin_ac")
     resultSet = origin.find_all("option")
+    resultSet.pop(0)
     for op in resultSet:
         aiport = Airport(op['value'], util.getAirportName(op.text))
         airports.append(aiport)
-    airports.pop(0)
     return airports
 
-def getFlightInfo(row):
+def getFlightInfo(row, flightInfoMode):
     cells = row.find_all("td")
     #time = cells[0].text
     flightNumber = cells[1].a.text.strip()
+    print("Retrieving info for flight " + flightNumber)
     url = cells[1].a['href']
     #airport = Airport(util.getAirportCode(cells[2].text), util.getAirportName(cells[2].text))
     company = cells[3].text.strip()
     #terminal = cells[4].text
 
-    plane, departure, arrival = getFlightDetails(url)
-    return Flight(flightNumber, company, plane, departure, arrival)
+    plane, departure, arrival, type = getFlightDetails(url, flightInfoMode)
+    return Flight(flightNumber, company, plane, departure, arrival, type, url)
 
-def getFlightDetails(relativeUrl):
+def getFlightDetails(relativeUrl, flightInfoMode):
     soup = util.getDetails(relativeUrl)
     table = soup.find("table")
-    plane = table.caption.find_all("span")[1]
+    if (table is not None):
+        plane = table.caption.span.contents[1]
 
-    theads = table.find_all("thead")
-    tbodys = table.find_all("tbody")
+        theads = table.find_all("thead")
+        tbodys = table.find_all("tbody")
 
-    departure = getFlightSchedule(theads[0], tbodys[0])
-    if (len(tbodys)>1):
-        arrival =  getFlightSchedule(theads[1], tbodys[1])
+        if (len(tbodys)>1):
+            departure = getFlightSchedule(theads[0], tbodys[0])
+            arrival = getFlightSchedule(theads[1], tbodys[1])
+            flight_type = FlightType.NATIONAL
+        else:
+            if (flightInfoMode == FlightInfoMode.DEPARTURE):
+                departure = getFlightSchedule(theads[0], tbodys[0])
+                arrival = getFlightSchedule(theads[1], None)
+                flight_type = FlightType.INTERNATIONAL_DESTINY
+            else:
+                departure = getFlightSchedule(theads[0], None)
+                arrival =  getFlightSchedule(theads[1], tbodys[0])
+                flight_type = FlightType.INTERNATIONAL_ORIGIN
+        return plane, departure, arrival, flight_type
     else:
-        arrival = getFlightSchedule(theads[1], None)
-
-    return plane, departure, arrival
+        return None, None, None, None
 
 def getFlightSchedule(thead, tbody):
     tr = thead.tr
     try:
-        airport = tr.th.a.text
-        weather = tr.img["alt"]
+        airport_txt = tr.th.a.text
+        airport = Airport(util.getAirportCode(airport_txt), util.getAirportName(airport_txt))
+        weather_section = tr.find("span", {"class":"clima"})
+        weather_temp = weather_section.contents[1]
+        weather_desc = tr.img["alt"]
+        weather = "{} {}".format(weather_temp, weather_desc)
         cells = tbody.tr.find_all("td", )
         date = cells[0].text
         time = cells[1].text
@@ -51,10 +66,8 @@ def getFlightSchedule(thead, tbody):
         status = cells[5].text
         return FlightSchedule(date, time, airport, terminal, status, weather)
     except AttributeError:
-        airport = tr.find_all("span")[1].text
-        return Airport(util.getAirportCode(airport), util.getAirportName(airport))
-
-
+        airport_txt = tr.find_all("span")[1].text
+        return Airport(util.getAirportCode(airport_txt), util.getAirportName(airport_txt))
 
 def getDepartures(airport):
     flights = []
@@ -65,7 +78,7 @@ def getDepartures(airport):
         rows = table.find("tbody").find_all("tr")
         for row in rows:
             if row["class"][0] == "principal":
-                flight = getFlightInfo(row)
+                flight = getFlightInfo(row, FlightInfoMode.DEPARTURE)
                 print(flight)
                 flights.append(flight)
     return flights
@@ -79,22 +92,21 @@ def getArrivals(airport):
         rows = table.find("tbody").find_all("tr")
         for row in rows:
             if row["class"][0] == "principal":
-                flight = getFlightInfo(row)
+                flight = getFlightInfo(row, FlightInfoMode.ARRIVAL)
                 print(flight)
                 flights.append(flight)
     return flights
 
 airports = get_airports(util.getAirportsContent())
-print('Airports\n' + ''.join(str(a)+'; ' for a in airports))
+print('*** Airports ***')
+print(''.join(str(a)+'; ' for a in airports))
 
+print('\n*** Flights ***')
 flights = []
-#uniqueFlights = set()
 for airport in airports:
     departures = getDepartures(airport)
     arrivals = getArrivals(airport)
     flights = flights + departures + arrivals
-    #uniqueFlights.update(departures)
-    #uniqueFlights.update(arrivals)
 
 
 print('Number of flights (departures + arrivals) = {}'.format(len(flights)))
