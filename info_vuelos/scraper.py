@@ -1,6 +1,7 @@
-from info_vuelos.domain_model import Flight, Airport, FlightSchedule, FlightInfoMode, FlightType
-from info_vuelos import util
+import time
 import logging as log
+from info_vuelos.domain_model import Flight, Airport, FlightInfoMode, FlightType, Departure, Arrival
+from info_vuelos import util
 
 def get_airports(soup):
     airports = []
@@ -22,7 +23,9 @@ def getFlightInfo(row, flightInfoMode):
     #terminal = cells[4].text
     log.info("Scrapping  flight " + flightNumber)
     plane, departure, arrival, type = getFlightDetails(url, flightInfoMode)
-    return Flight(flightNumber, company, plane, departure, arrival, type, url)
+    flight = Flight(flightNumber, company, plane, departure, arrival, type, url, time.ctime())
+    print(flight)
+    return flight
 
 def getFlightDetails(relativeUrl, flightInfoMode):
     soup = util.getDetails(relativeUrl)
@@ -34,24 +37,24 @@ def getFlightDetails(relativeUrl, flightInfoMode):
         tbodys = table.find_all("tbody")
 
         if (len(tbodys)>1):
-            departure = getFlightSchedule(theads[0], tbodys[0])
-            arrival = getFlightSchedule(theads[1], tbodys[1])
+            departure = getFlightDepartureDetails(theads[0], tbodys[0])
+            arrival = getFlightArrivalDetails(theads[1], tbodys[1])
             flight_type = FlightType.NATIONAL
         else:
             if (flightInfoMode == FlightInfoMode.DEPARTURE):
-                departure = getFlightSchedule(theads[0], tbodys[0])
-                arrival = getFlightSchedule(theads[1], None)
+                departure = getFlightDepartureDetails(theads[0], tbodys[0])
+                arrival = getFlightArrivalDetails(theads[1], None)
                 flight_type = FlightType.INTERNATIONAL_DESTINY
             else:
-                departure = getFlightSchedule(theads[0], None)
-                arrival =  getFlightSchedule(theads[1], tbodys[0])
+                departure = getFlightDepartureDetails(theads[0], None)
+                arrival =  getFlightArrivalDetails(theads[1], tbodys[0])
                 flight_type = FlightType.INTERNATIONAL_ORIGIN
         return plane, departure, arrival, flight_type
     else:
-        log.debug("Error in url " + relativeUrl)
+        log.ERROR("Error scraping flight details from %s", relativeUrl)
         return None, None, None, None
 
-def getFlightSchedule(thead, tbody):
+def getFlightDepartureDetails(thead, tbody):
     tr = thead.tr
     try:
         airport_txt = tr.th.a.text
@@ -64,14 +67,43 @@ def getFlightSchedule(thead, tbody):
         date = cells[0].text
         time = cells[1].text
         terminal = cells[2].text
+        counter = cells[3].text
+        door = cells[4].text
         if len(cells) == 6:
-            status = cells[5].text
+            status = cells[5].text.strip()
         else:
             status = None
             log.warning('Status not available')
-        return FlightSchedule(date, time, airport, terminal, status, weather)
-    except AttributeError:
+        return Departure(date, time, airport, terminal, status, weather, counter, door)
+    except AttributeError as error:
         airport_txt = tr.find_all("span")[1].text
+        log.warning('Some field is missing: %s', error)
+        return Airport(util.getAirportCode(airport_txt), util.getAirportName(airport_txt))
+
+def getFlightArrivalDetails(thead, tbody):
+    tr = thead.tr
+    try:
+        airport_txt = tr.th.a.text
+        airport = Airport(util.getAirportCode(airport_txt), util.getAirportName(airport_txt))
+        weather_section = tr.find("span", {"class":"clima"})
+        weather_temp = weather_section.contents[1]
+        weather_desc = tr.img["alt"]
+        weather = "{} {}".format(weather_temp, weather_desc)
+        cells = tbody.tr.find_all("td", )
+        date = cells[0].text
+        time = cells[1].text
+        terminal = cells[2].text
+        room = cells[3].text
+        belt = cells[4].text
+        if len(cells) == 6:
+            status = cells[5].text.strip()
+        else:
+            status = None
+            log.warning('Status not available')
+        return Arrival(date, time, airport, terminal, status, weather, room, belt)
+    except AttributeError as error:
+        airport_txt = tr.find_all("span")[1].text
+        log.warning('Some field is missing: %s', error)
         return Airport(util.getAirportCode(airport_txt), util.getAirportName(airport_txt))
 
 def getDepartures(airport):
@@ -80,13 +112,13 @@ def getDepartures(airport):
     try:
         tables = soup.find(id="flightResults").findAll("table")
         for table in tables:
-            date = table.caption.text.split(",")[-1].strip()
+            #date = table.caption.text.split(",")[-1].strip()
             rows = table.find("tbody").find_all("tr")
             for row in rows:
                 if row["class"][0] == "principal":
                     flight = getFlightInfo(row, FlightInfoMode.DEPARTURE)
                     flights.append(flight)
-                    log.info(str(flight))
+                    log.info('Departure: %s',flight)
     except AttributeError:
         log.error('Error scrapping departures from airport %s', airport)
     return flights
@@ -97,13 +129,13 @@ def getArrivals(airport):
     try:
         tables = soup.find(id="flightResults").findAll("table")
         for table in tables:
-            date = table.caption.text.split(",")[-1].strip()
+            #date = table.caption.text.split(",")[-1].strip()
             rows = table.find("tbody").find_all("tr")
             for row in rows:
                 if row["class"][0] == "principal":
                     flight = getFlightInfo(row, FlightInfoMode.ARRIVAL)
                     flights.append(flight)
-                    log.info(str(flight))
+                    log.info('Arrival: %s',flight)
     except AttributeError:
         log.error('Error scraping arrivals to airport %s', airport)
     return flights
@@ -125,5 +157,5 @@ def main():
 
 if __name__ == "__main__":
     #log.basicConfig(filename='scrapping.log', level=log.INFO)
-    log.basicConfig(level=log.INFO, format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S')
+    log.basicConfig(filename='scrapping.log', level=log.INFO, format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S')
     main()
