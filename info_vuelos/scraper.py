@@ -1,5 +1,6 @@
 from info_vuelos.domain_model import Flight, Airport, FlightSchedule, FlightInfoMode, FlightType
 from info_vuelos import util
+import logging as log
 
 def get_airports(soup):
     airports = []
@@ -15,12 +16,11 @@ def getFlightInfo(row, flightInfoMode):
     cells = row.find_all("td")
     #time = cells[0].text
     flightNumber = cells[1].a.text.strip()
-    print("Retrieving info for flight " + flightNumber)
     url = cells[1].a['href']
     #airport = Airport(util.getAirportCode(cells[2].text), util.getAirportName(cells[2].text))
     company = cells[3].text.strip()
     #terminal = cells[4].text
-
+    log.info("Scrapping  flight " + flightNumber)
     plane, departure, arrival, type = getFlightDetails(url, flightInfoMode)
     return Flight(flightNumber, company, plane, departure, arrival, type, url)
 
@@ -48,6 +48,7 @@ def getFlightDetails(relativeUrl, flightInfoMode):
                 flight_type = FlightType.INTERNATIONAL_ORIGIN
         return plane, departure, arrival, flight_type
     else:
+        log.debug("Error in url " + relativeUrl)
         return None, None, None, None
 
 def getFlightSchedule(thead, tbody):
@@ -63,7 +64,11 @@ def getFlightSchedule(thead, tbody):
         date = cells[0].text
         time = cells[1].text
         terminal = cells[2].text
-        status = cells[5].text
+        if len(cells) == 6:
+            status = cells[5].text
+        else:
+            status = None
+            log.warning('Status not available')
         return FlightSchedule(date, time, airport, terminal, status, weather)
     except AttributeError:
         airport_txt = tr.find_all("span")[1].text
@@ -72,44 +77,53 @@ def getFlightSchedule(thead, tbody):
 def getDepartures(airport):
     flights = []
     soup = util.getDeparturesContent(airport.code)
-    tables = soup.find(id="flightResults").findAll("table")
-    for table in tables:
-        date = table.caption.text.split(",")[-1].strip()
-        rows = table.find("tbody").find_all("tr")
-        for row in rows:
-            if row["class"][0] == "principal":
-                flight = getFlightInfo(row, FlightInfoMode.DEPARTURE)
-                print(flight)
-                flights.append(flight)
+    try:
+        tables = soup.find(id="flightResults").findAll("table")
+        for table in tables:
+            date = table.caption.text.split(",")[-1].strip()
+            rows = table.find("tbody").find_all("tr")
+            for row in rows:
+                if row["class"][0] == "principal":
+                    flight = getFlightInfo(row, FlightInfoMode.DEPARTURE)
+                    flights.append(flight)
+                    log.info(str(flight))
+    except AttributeError:
+        log.error('Error scrapping departures from airport %s', airport)
     return flights
 
 def getArrivals(airport):
     flights = []
     soup = util.getArrivalsContent(airport.code)
-    tables = soup.find(id="flightResults").findAll("table")
-    for table in tables:
-        date = table.caption.text.split(",")[-1].strip()
-        rows = table.find("tbody").find_all("tr")
-        for row in rows:
-            if row["class"][0] == "principal":
-                flight = getFlightInfo(row, FlightInfoMode.ARRIVAL)
-                print(flight)
-                flights.append(flight)
+    try:
+        tables = soup.find(id="flightResults").findAll("table")
+        for table in tables:
+            date = table.caption.text.split(",")[-1].strip()
+            rows = table.find("tbody").find_all("tr")
+            for row in rows:
+                if row["class"][0] == "principal":
+                    flight = getFlightInfo(row, FlightInfoMode.ARRIVAL)
+                    flights.append(flight)
+                    log.info(str(flight))
+    except AttributeError:
+        log.error('Error scraping arrivals to airport %s', airport)
     return flights
 
-airports = get_airports(util.getAirportsContent())
-print('*** Airports ***')
-print(''.join(str(a)+'; ' for a in airports))
+def main():
+    airports = get_airports(util.getAirportsContent())
+    log.info('Scrapping airport names')
+    log.info(''.join(str(a) + '; ' for a in airports))
 
-print('\n*** Flights ***')
-flights = []
-for airport in airports:
-    departures = getDepartures(airport)
-    arrivals = getArrivals(airport)
-    flights = flights + departures + arrivals
+    log.info('Scrapping flights')
+    flights = []
+    for airport in airports:
+        departures = getDepartures(airport)
+        arrivals = getArrivals(airport)
+        flights = flights + departures + arrivals
+
+    log.info('Number of flights (departures + arrivals) = {}'.format(len(flights)))
 
 
-print('Number of flights (departures + arrivals) = {}'.format(len(flights)))
-#print('Number of flights removing duplicates = {}'.format(len(uniqueFlights)))
-
-#print('Flights\n' + ''.join(str(f) + '\n ' for f in flights))
+if __name__ == "__main__":
+    #log.basicConfig(filename='scrapping.log', level=log.INFO)
+    log.basicConfig(level=log.INFO, format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S')
+    main()
