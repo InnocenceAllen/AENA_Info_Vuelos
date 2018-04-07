@@ -146,6 +146,7 @@ def main():
     log.info(''.join(str(a) + '; ' for a in airports))
 
     log.info('Scrapping flights')
+    log.info('Arrivals first')
     flights = []
     for airport in airports:
         departures = getDepartures(airport)

@@ -39,6 +39,9 @@ class Flight:
         self.type = flight_type
         self.url = url
         self.timestamp = timestamp
+        key_suffix = departure.key  if flight_type == FlightType.INTERNATIONAL_DESTINY else arrival.key
+        self.key = '{}{}'.format(flight_number, key_suffix)
+
 
     def __str__(self):
         return '{} {} [{}] -> [{}] / {}'.format(self.flightNumber, self.plane, self.departure, self.arrival, self.timestamp)
@@ -52,7 +55,6 @@ class Flight:
     def __hash__(self):
         return hash((self.flightNumber, self.departure, self.arrival))
 
-
 class FlightSchedule:
     def __init__(self, date, time, airport, terminal, status, weather):
         self.date = date
@@ -61,16 +63,19 @@ class FlightSchedule:
         self.terminal = terminal
         self.status = status
         self.weather = weather
+        self.key = '{}{}'.format(date, time)
 
     def __str__(self):
         return '{} {} {} {} {} {}'.format(self.date, self.time, self.airport, self.terminal, self.status, self.weather)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
-            return (self.date, self.time, self.airport) == (
+            return (self.date, self.time) == (
                 other.date, other.time, other.airport)
         return False
 
+    def __hash__(self):
+        return hash((self.date,self.time))
 
 class Departure(FlightSchedule):
     def __init__(self, date, time, airport, terminal, status, weather, counter, door):
