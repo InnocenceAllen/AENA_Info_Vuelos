@@ -1,7 +1,14 @@
 import time
 import logging as log
+import sys
 from info_vuelos.domain_model import Flight, Airport, FlightInfoMode, FlightType, Departure, Arrival
 from info_vuelos import util
+
+#global output
+orig_stdout = sys.stdout
+date=time.strftime("%d-%m-%Y_%I-%M")
+f = open('flight'+date+'.csv', 'w')
+sys.stdout = f
 
 def get_airports(soup):
     airports = []
@@ -51,7 +58,10 @@ def getFlightDetails(relativeUrl, flightInfoMode):
                 flight_type = FlightType.INTERNATIONAL_ORIGIN
         return plane, departure, arrival, flight_type
     else:
-        log.ERROR("Error scraping flight details from %s", relativeUrl)
+        try:
+            log.ERROR("Error scraping flight details from %s"+ str(relativeUrl))
+        except:
+            pass
         return None, None, None, None
 
 def getFlightDepartureDetails(thead, tbody):
@@ -141,6 +151,7 @@ def getArrivals(airport):
     return flights
 
 def main():
+
     airports = get_airports(util.getAirportsContent())
     log.info('Scrapping airport names')
     log.info(''.join(str(a) + '; ' for a in airports))

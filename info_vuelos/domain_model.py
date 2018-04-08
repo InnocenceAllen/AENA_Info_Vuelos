@@ -18,7 +18,7 @@ class Airport:
         self.name = name
 
     def __str__(self):
-        return '{} ({})'.format(self.name, self.code)
+        return '{} ; {}'.format(self.name, self.code)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
@@ -44,7 +44,7 @@ class Flight:
 
 
     def __str__(self):
-        return '{} {} [{}] -> [{}] / {}'.format(self.flightNumber, self.plane, self.departure, self.arrival, self.timestamp)
+        return '{} ; {} ; ;{}; ; {}; ; {}'.format(self.flightNumber, self.plane, self.departure, self.arrival, self.timestamp)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
@@ -66,7 +66,7 @@ class FlightSchedule:
         self.key = '{}{}'.format(date, time)
 
     def __str__(self):
-        return '{} {} {} {} {} {}'.format(self.date, self.time, self.airport, self.terminal, self.status, self.weather)
+        return '{} ; {} ; {} ; {} ; {} ; {}'.format(self.date, self.time, self.airport, self.terminal, self.status, self.weather)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
@@ -84,7 +84,7 @@ class Departure(FlightSchedule):
         self.door = door
 
     def __str__(self):
-        return super().__str__() + '{} {}'.format(self.counter, self.door)
+        return super().__str__() + '{} ; {}'.format(self.counter, self.door)
 
 class Arrival(FlightSchedule):
     def __init__(self, date, time, airport, terminal, status, weather, room, belt):
@@ -93,4 +93,4 @@ class Arrival(FlightSchedule):
         self.belt = belt
 
     def __str__(self):
-        return super().__str__() + '{} {}'.format(self.room, self.belt)
+        return super().__str__() + '{} ; {}'.format(self.room, self.belt)

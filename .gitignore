@@ -102,3 +102,5 @@ ENV/
 
 # mypy
 .mypy_cache/
+info_vuelos/test.csv
+info_vuelos/flight08-04-2018_03-32.csv
