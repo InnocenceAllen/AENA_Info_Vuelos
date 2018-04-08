@@ -1,6 +1,7 @@
 import time
 import logging as log
 import sys
+import constants
 from info_vuelos.domain_model import Flight, Airport, FlightInfoMode, FlightType, Departure, Arrival
 from info_vuelos import util
 
@@ -9,6 +10,7 @@ orig_stdout = sys.stdout
 date=time.strftime("%d-%m-%Y_%I-%M")
 f = open('flight'+date+'.csv', 'w')
 sys.stdout = f
+print(constants.HEADER)
 
 def get_airports(soup):
     airports = []
