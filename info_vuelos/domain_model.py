@@ -15,20 +15,23 @@ class FlightType(Enum):
 class Weather:
     def __init__(self, min, max, description):
         self.min = min
-        self.max = max,
+        self.max = max
         self.description = description
 
     def __str__(self):
         return '{} {} {}'.format(self.min, self.max, self.description)
 
     def __repr__(self):
-        return '{} {} {}'.format(self.min, self.max, self.description)
+        return '{};{};{}'.format(self.min, self.max, self.description)
 
 
 class Airport:
     def __init__(self, code, name):
         self.code = code
         self.name = name
+
+    def __str__(self):
+        return '{} ({})'.format(self.name, self.code)
 
     def __repr__(self):
         return '{};{}'.format(self.name, self.code)
