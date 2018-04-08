@@ -103,9 +103,12 @@ def getFlightArrivalDetails(thead, tbody):
         airport_txt = tr.th.a.text
         airport = Airport(util.getAirportCode(airport_txt), util.getAirportName(airport_txt))
         weather_section = tr.find("span", {"class": "clima"})
-        weather_temp = weather_section.contents[1]
+        weather_temp = weather_section.contents[1].split()
         weather_desc = tr.img["alt"]
-        weather = "{} {}".format(weather_temp, weather_desc)
+        min_temp = int(weather_temp[0][:-1])
+        max_temp = int(weather_temp[1][:-1])
+        weather = Weather(min_temp, max_temp, weather_desc)
+        # weather = "{} {}".format(weather_temp, weather_desc)
         cells = tbody.tr.find_all("td", )
         date = cells[0].text
         time = cells[1].text
@@ -162,6 +165,7 @@ def getArrivals(airport):
 
 def main():
     filename = 'flights{}.csv'.format(time.strftime("%d-%m-%Y_%I-%M"))
+    util.create_csv(filename, constants.DATA_FIELDS, constants.CSV_DELIMITER)
 
     airports = get_airports(util.getAirportsContent())
     log.info('Scrapping airport names')
