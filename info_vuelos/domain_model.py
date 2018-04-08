@@ -1,5 +1,7 @@
 from enum import Enum
 
+import datetime
+
 
 class FlightInfoMode(Enum):
     DEPARTURE = 1
@@ -46,7 +48,7 @@ class Airport:
 
 
 class Flight:
-    def __init__(self, flight_number, company, plane, departure, arrival, flight_type, url, timestamp):
+    def __init__(self, flight_number, company, plane, departure, arrival, flight_type, url):
         self.flightNumber = flight_number
         self.company = company
         self.plane = plane
@@ -54,12 +56,12 @@ class Flight:
         self.arrival = arrival
         self.type = flight_type
         self.url = url
-        self.timestamp = timestamp
+        self.timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         key_suffix = departure.key if flight_type == FlightType.INTERNATIONAL_DESTINY else arrival.key
         self.key = '{}{}'.format(flight_number, key_suffix)
 
     def __str__(self):
-        return '{} {} [{}] -> [{}]'.format(self.flightNumber, self.plane, self.departure, self.arrival)
+        return '{} from {} to {}'.format(self.flightNumber, self.departure, self.arrival)
 
     def __repr__(self):
         return '{};{};{};{};{}'.format(self.flightNumber, self.plane, repr(self.departure), repr(self.arrival),
@@ -86,7 +88,7 @@ class FlightSchedule:
         self.key = '{}{}'.format(date, time)
 
     def __str__(self):
-        return '{} {} {} {} {} {}'.format(self.date, self.time, self.airport, self.terminal, self.status, self.weather)
+        return '{} ({} {})'.format(self.airport.name, self.date, self.time)
 
     def __repr__(self):
         return '{};{};{};{};{};{}'.format(self.date, self.time, repr(self.airport), self.terminal, self.status,
@@ -109,10 +111,10 @@ class Departure(FlightSchedule):
         self.door = door
 
     def __str__(self):
-        return super().__str__() + ' {} {}'.format(self.counter, self.door)
+        return super().__str__() + ''
 
     def __repr__(self):
-        return super().__repr__() + '{};{}'.format(self.counter, self.door)
+        return super().__repr__() + ';{};{}'.format(self.counter, self.door)
 
 
 class Arrival(FlightSchedule):
@@ -122,7 +124,7 @@ class Arrival(FlightSchedule):
         self.belt = belt
 
     def __str__(self):
-        return super().__str__() + ' {} {}'.format(self.room, self.belt)
+        return super().__str__() + ''
 
     def __repr__(self):
-        return super().__repr__() + '{};{}'.format(self.room, self.belt)
+        return super().__repr__() + ';{};{}'.format(self.room, self.belt)

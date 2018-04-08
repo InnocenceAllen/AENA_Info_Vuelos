@@ -34,7 +34,7 @@ def getFlightInfo(row, flightInfoMode):
     # terminal = cells[4].text
     log.info("Scrapping  flight " + flightNumber)
     plane, departure, arrival, type = getFlightDetails(url, flightInfoMode)
-    flight = Flight(flightNumber, company, plane, departure, arrival, type, url, time.ctime())
+    flight = Flight(flightNumber, company, plane, departure, arrival, type, url)
     print(flight)
     return flight
 
