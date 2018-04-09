@@ -16,9 +16,9 @@ class FlightType(Enum):
 
 class Weather:
     def __init__(self, min, max, description):
-        self.min = min
-        self.max = max
-        self.description = description
+        self.min = min or '-'
+        self.max = max or '-'
+        self.description = description or '-'
 
     def __str__(self):
         return '{} {} {}'.format(self.min, self.max, self.description)
@@ -29,8 +29,8 @@ class Weather:
 
 class Airport:
     def __init__(self, code, name):
-        self.code = code
-        self.name = name
+        self.code = code or '-'
+        self.name = name or '-'
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.code)
@@ -49,13 +49,13 @@ class Airport:
 
 class Flight:
     def __init__(self, flight_number, company, plane, departure, arrival, flight_type, url):
-        self.flightNumber = flight_number
-        self.company = company
-        self.plane = plane
-        self.departure = departure
-        self.arrival = arrival
-        self.type = flight_type
-        self.url = url
+        self.flightNumber = flight_number or '-'
+        self.company = company or '-'
+        self.plane = plane or '-'
+        self.departure = departure or Departure(None, None, None, None, None, None, None, None)
+        self.arrival = arrival or Arrival(None, None, None, None, None, None, None, None)
+        self.type = flight_type or '-'
+        self.url = url or '-'
         self.timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         key_suffix = departure.key if flight_type == FlightType.INTERNATIONAL_DESTINY else arrival.key
         self.key = '{}{}'.format(flight_number, key_suffix)
@@ -79,12 +79,12 @@ class Flight:
 
 class FlightSchedule:
     def __init__(self, date, time, airport, terminal, status, weather):
-        self.date = date
-        self.time = time
-        self.airport = airport
-        self.terminal = terminal
-        self.status = status
-        self.weather = weather
+        self.date = date or '-'
+        self.time = time or '-'
+        self.airport = airport or Airport(None, None)
+        self.terminal = terminal or '-'
+        self.status = status or '-'
+        self.weather = weather or Weather(None, None, None)
         self.key = '{}{}'.format(date, time)
 
     def __str__(self):
@@ -107,8 +107,8 @@ class FlightSchedule:
 class Departure(FlightSchedule):
     def __init__(self, date, time, airport, terminal, status, weather, counter, door):
         super().__init__(date, time, airport, terminal, status, weather)
-        self.counter = counter
-        self.door = door
+        self.counter = counter or '-'
+        self.door = door or '-'
 
     def __str__(self):
         return super().__str__() + ''
@@ -120,8 +120,8 @@ class Departure(FlightSchedule):
 class Arrival(FlightSchedule):
     def __init__(self, date, time, airport, terminal, status, weather, room, belt):
         super().__init__(date, time, airport, terminal, status, weather)
-        self.room = room
-        self.belt = belt
+        self.room = room or '-'
+        self.belt = belt or '-'
 
     def __str__(self):
         return super().__str__() + ''
