@@ -92,9 +92,16 @@ def getFlightDepartureDetails(thead, tbody):
             log.warning('Status not available')
         return Departure(date, time, airport, terminal, status, weather, counter, door)
     except AttributeError as error:
-        airport_txt = tr.find_all("span")[1].text
-        log.warning('Some field is missing: %s', error)
-        return Airport(util.getAirportCode(airport_txt), util.getAirportName(airport_txt))
+        try:
+            airport_txt = tr.find_all("span")[1].text
+            log.warning('Some field is missing: %s', error)
+            return Airport(util.getAirportCode(airport_txt), util.getAirportName(airport_txt))
+        except:
+            log.warning('Cannot scrape airport: %s', error)
+            return None
+            pass
+
+
 
 
 def getFlightArrivalDetails(thead, tbody):
