@@ -177,16 +177,16 @@ def main():
     log.info(''.join(str(a) + '; ' for a in airports))
 
     log.info('Scrapping flights')
-    log.info('Arrivals first')
-    flights = []
-    for airport in airports:
-        departures = getDepartures(airport)
-        util.save_to_csv(filename, departures)
-        arrivals = getArrivals(airport)
-        util.save_to_csv(filename, departures)
-        # flights = flights + departures + arrivals
 
-    log.info('Number of flights (departures + arrivals) = {}'.format(len(flights)))
+    for airport in airports:
+        log.info('Scraping departures from airport {}'.format(airport))
+        departures = getDepartures(airport)
+        log.info('Saving {} departures from airport {}'.format(len(departures), airport))
+        util.save_to_csv(filename, departures)
+        log.info('Scraping arrivals to airport {}'.format(airport))
+        arrivals = getArrivals(airport)
+        log.info('Saving {} arrivals to airport {}'.format(len(arrivals), airport))
+        util.save_to_csv(filename, arrivals)
 
 
 if __name__ == "__main__":
