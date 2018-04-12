@@ -182,7 +182,7 @@ def obtainFlights(airports, filename, end_time):
         util.save_to_csv(filename, arrivals)
         print('\n*****************************************\n')
     if (datetime.datetime.now() < end_time):
-        threading.Timer(constants.SCRAPING_FRECUENCY*60, obtainFlights,[airports,filename])
+        threading.Timer(constants.SCRAPING_FRECUENCY*90, obtainFlights,[airports,filename, end_time])
 
 def main():
 
