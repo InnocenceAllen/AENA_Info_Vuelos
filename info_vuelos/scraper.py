@@ -201,6 +201,6 @@ def main():
 
 if __name__ == "__main__":
     # log.basicConfig(filename='scrapping.log', level=log.INFO)
-    log.basicConfig(filename='scrapping.log', level=log.INFO, format='%(asctime)s %(message)s',
+    log.basicConfig(filename='scrapping.log', level=log.WARNING, format='%(asctime)s %(message)s',
                     datefmt='%d/%m/%Y %I:%M:%S')
     main()
