@@ -7,3 +7,4 @@ DATA_FIELDS = ['flightNumber', 'plane', 'dep_date', 'dep_time', 'dep_airport_nam
                'arr_date', 'arr_time', 'arr_airport_name', 'arr_airport_code', 'arr_terminal', 'arr_status',
                'arr_weather_min', 'arr_weather_max', 'arr_weather_desc', 'arr_room', 'arr_belt', 'timestamp']
 CSV_DELIMITER = ';'
+SCRAPING_FRECUENCY = 60 #minutes
