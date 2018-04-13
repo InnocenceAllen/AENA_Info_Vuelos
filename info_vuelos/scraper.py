@@ -169,6 +169,7 @@ def getArrivals(airport):
         log.error('Error scraping arrivals to airport %s', airport)
     return flights
 
+
 def obtainFlights(airports, filename, end_time):
     log.info('Scrapping flights at {}'.format(datetime.datetime.now()))
     for airport in airports:
@@ -182,10 +183,10 @@ def obtainFlights(airports, filename, end_time):
         util.save_to_csv(filename, arrivals)
         print('\n*****************************************\n')
     if (datetime.datetime.now() < end_time):
-        threading.Timer(constants.SCRAPING_FRECUENCY*90, obtainFlights,[airports,filename, end_time])
+        threading.Timer(constants.SCRAPING_FRECUENCY * 60, obtainFlights, [airports, filename, end_time]).start()
+
 
 def main():
-
     filename = 'flights{}.csv'.format(time.strftime("%d-%m-%Y_%I-%M"))
     util.create_csv(filename, constants.DATA_FIELDS, constants.CSV_DELIMITER)
 
@@ -194,13 +195,13 @@ def main():
     log.info(''.join(str(a) + '; ' for a in airports))
 
     current_time = datetime.datetime.now()
-    end_time = current_time + datetime.timedelta(hours=72)
+    end_time = current_time + datetime.timedelta(hours=60)
     obtainFlights(airports, filename, end_time)
     log.info('Scrapping flights finished at {}'.format(datetime.datetime.now()))
 
 
 if __name__ == "__main__":
-    # log.basicConfig(filename='scrapping.log', level=log.INFO)
-    log.basicConfig(filename='scrapping.log', level=log.WARNING, format='%(asctime)s %(message)s',
+    log.basicConfig(filename='scrapping{}.log'.format(time.strftime("%d-%m-%Y_%I-%M")), level=log.WARNING,
+                    format='%(asctime)s %(message)s',
                     datefmt='%d/%m/%Y %I:%M:%S')
     main()
