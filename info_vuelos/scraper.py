@@ -2,6 +2,7 @@ import logging as log
 import threading
 import time
 import datetime
+import queue
 
 import constants
 from info_vuelos.domain_model import Flight, Airport, FlightInfoMode, FlightType, Departure, Arrival, Weather
@@ -170,18 +171,44 @@ def getArrivals(airport):
     return flights
 
 
+def obtainAirportFlights(airport, queue):
+    log.info('Scraping flights for airport {}'.format(airport))
+    print('Scraping flights for airport {}'.format(airport))
+    departures = getDepartures(airport)
+    queue.put(departures)
+    arrivals = getArrivals(airport)
+    queue.put(arrivals)
+
+
+def drain(q):
+  while True:
+    try:
+      yield q.get_nowait()
+    except queue.Empty:
+      break
+
 def obtainFlights(airports, filename, end_time):
-    log.info('Scrapping flights at {}'.format(datetime.datetime.now()))
+    log.info('Scrapping flights starting at {}'.format(datetime.datetime.now()))
+    print('\n********** SCRAPING CYCLE STARTED: {}\n'.format(datetime.datetime.now()))
+    pool = []
+    q = queue.Queue()
     for airport in airports:
-        log.info('Scraping departures from airport {}'.format(airport))
-        departures = getDepartures(airport)
-        log.info('Saving {} departures from airport {}'.format(len(departures), airport))
-        util.save_to_csv(filename, departures)
-        log.info('Scraping arrivals to airport {}'.format(airport))
-        arrivals = getArrivals(airport)
-        log.info('Saving {} arrivals to airport {}'.format(len(arrivals), airport))
-        util.save_to_csv(filename, arrivals)
-        print('\n*****************************************\n')
+        pool.append(threading.Thread(
+            target=obtainAirportFlights,
+            name='Thread-' + airport.code,
+            args=[airport, q]))
+
+    for thread in pool:
+        thread.start()
+
+    for thread in pool:
+        thread.join()
+
+    for item in drain(q):
+        util.save_to_csv(filename, item)
+
+    print('\n********** SCRAPING CYCLE COMPLETED: {}\n'.format(datetime.datetime.now()))
+
     if (datetime.datetime.now() < end_time):
         threading.Timer(constants.SCRAPING_FRECUENCY * 60, obtainFlights, [airports, filename, end_time]).start()
 
@@ -195,7 +222,7 @@ def main():
     log.info(''.join(str(a) + '; ' for a in airports))
 
     current_time = datetime.datetime.now()
-    end_time = current_time + datetime.timedelta(hours=60)
+    end_time = current_time + datetime.timedelta(days=7)
     obtainFlights(airports, filename, end_time)
     log.info('Scrapping flights finished at {}'.format(datetime.datetime.now()))
 
