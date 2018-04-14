@@ -1,6 +1,9 @@
-import time
 import logging as log
-import sys
+import threading
+import time
+import datetime
+import queue
+
 import constants
 from info_vuelos.domain_model import Flight, Airport, FlightInfoMode, FlightType, Departure, Arrival, Weather
 from info_vuelos import util
@@ -168,6 +171,48 @@ def getArrivals(airport):
     return flights
 
 
+def obtainAirportFlights(airport, queue):
+    log.info('Scraping flights for airport {}'.format(airport))
+    print('Scraping flights for airport {}'.format(airport))
+    departures = getDepartures(airport)
+    queue.put(departures)
+    arrivals = getArrivals(airport)
+    queue.put(arrivals)
+
+
+def drain(q):
+  while True:
+    try:
+      yield q.get_nowait()
+    except queue.Empty:
+      break
+
+def obtainFlights(airports, filename, end_time):
+    log.info('Scrapping flights starting at {}'.format(datetime.datetime.now()))
+    print('\n********** SCRAPING CYCLE STARTED: {}\n'.format(datetime.datetime.now()))
+    pool = []
+    q = queue.Queue()
+    for airport in airports:
+        pool.append(threading.Thread(
+            target=obtainAirportFlights,
+            name='Thread-' + airport.code,
+            args=[airport, q]))
+
+    for thread in pool:
+        thread.start()
+
+    for thread in pool:
+        thread.join()
+
+    for item in drain(q):
+        util.save_to_csv(filename, item)
+
+    print('\n********** SCRAPING CYCLE COMPLETED: {}\n'.format(datetime.datetime.now()))
+
+    if (datetime.datetime.now() < end_time):
+        threading.Timer(constants.SCRAPING_FRECUENCY * 60, obtainFlights, [airports, filename, end_time]).start()
+
+
 def main():
     filename = 'flights{}.csv'.format(time.strftime("%d-%m-%Y_%I-%M"))
     util.create_csv(filename, constants.DATA_FIELDS, constants.CSV_DELIMITER)
@@ -176,21 +221,14 @@ def main():
     log.info('Scrapping airport names')
     log.info(''.join(str(a) + '; ' for a in airports))
 
-    log.info('Scrapping flights')
-    log.info('Arrivals first')
-    flights = []
-    for airport in airports:
-        departures = getDepartures(airport)
-        util.save_to_csv(filename, departures)
-        arrivals = getArrivals(airport)
-        util.save_to_csv(filename, departures)
-        # flights = flights + departures + arrivals
-
-    log.info('Number of flights (departures + arrivals) = {}'.format(len(flights)))
+    current_time = datetime.datetime.now()
+    end_time = current_time + datetime.timedelta(days=7)
+    obtainFlights(airports, filename, end_time)
+    log.info('Scrapping flights finished at {}'.format(datetime.datetime.now()))
 
 
 if __name__ == "__main__":
-    # log.basicConfig(filename='scrapping.log', level=log.INFO)
-    log.basicConfig(filename='scrapping.log', level=log.INFO, format='%(asctime)s %(message)s',
+    log.basicConfig(filename='scrapping{}.log'.format(time.strftime("%d-%m-%Y_%I-%M")), level=log.WARNING,
+                    format='%(asctime)s %(message)s',
                     datefmt='%d/%m/%Y %I:%M:%S')
     main()
