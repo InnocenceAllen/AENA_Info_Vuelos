@@ -1,9 +1,6 @@
 # AENA Flights
 > Información sobre vuelos en los aeropuertos españoles
 
-# Imágen
-![alt text](https://github.com/InnocenceAllen/AENA_Info_Vuelos/blob/develop/flightBoard.png)
-
 # Contexto
 La información capturada contiene los detalles de todos los vuelos que ocurren en cada aeropuerto del país en determinado día. El conjunto de datos recopila datos referentes a los factores que caracterizan o influyen en determinado vuelo en el momento de salida y llegada a su destino.
 # Contenido
