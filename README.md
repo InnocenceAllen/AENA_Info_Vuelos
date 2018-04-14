@@ -3,11 +3,27 @@
 > Información sobre vuelos en los aeropuertos españoles
 
 ![alt text](https://goo.gl/QpQcAF)
+
 # Contexto
-La información capturada contiene los detalles de todos los vuelos que ocurren en cada aeropuerto del país en determinado día. El conjunto de datos recopila datos referentes a los factores que caracterizan o influyen en determinado vuelo en el momento de salida y llegada a su destino.
+
+Viajar es una de las actividades preferidas de las personas. Sin importar el motivo, anualmente más de 3 mil millones de personas visitan diferentes destinos (Cantidad de viajeros). En el caso de los españoles, no solo seleccionan placeres internacionales. Según el Instituto Nacional de Estadística, en el año 2017, 6.298.419 españoles visitaron lares foráneos. Sin embargo, 57.693.025 locales, ya sea por motivos de trabajo o placer, se trasladaron dentro del país y de estos, más de 2 millones mediante el tercer medio más utilizado en España para estos fines, el transporte aéreo (Libro INE).
+
+Cada aerolínea tiene su propia web, donde los clientes pueden comprar billetes, realizar la facturación, y obtener información actualizada sobre el estado de sus vuelos.
+
+Además, han surgido diferentes webs dedicadas a ofrecer servicios relacionados con el transporte aéreo. La mayoría se orientan a la búsqueda de vuelos y comparación de precios para encontrar la más barata, son los llamados metabuscadores, como [Kayak](https://www.kayak.com) o [Skyscanner](https://www.skyscanner.es/).  
+
+También han surgido algunas Webs especializadas en ofrecer información en tiempo real sobre vuelos y aeropuertos, siendo [FlightStats](https://www.flightstats.com) una de las más conocidas. 
+
+Todas estas webs son servicios de agregación, pues  obtienen y combinan en un único punto de acceso, datos procedentes de distintas fuentes, con el fin de ofrecer un valor añadido al usuario (encontrar el vuelo más barato en el primer caso, ofrecer información adicional o presentarla en un formato más atractivo o útil).
+
+La gestión de los aeropuertos y el tráfico aéreo en España recae en la empresa Aena SA y Aena Aeropuertos, una empresa a medio camino entre los público y lo privado. En este proyecto nos planteamos obtener, mediante técnicas de *scraping*, información sobre los vuelos que con origen o destino en los aeropuertos españoles, la cual se puede obtener de la Web de dicha empresa
+[(https://www.aena.es)](https://www.aena.es). En particular, desde el apartado denominado Infovuelos es posible obtener información sobre los vuelos que llegan o despegan de cualquier aeropuerto en territorio español. Una recopilación sistemática de esta información permitiría realizar análisis a posteriori con los cuales podríamos responder preguntas interesantes, tal y como describimos más adelante, en la sección Inspiración.
 
 ## Contenido
-Para caracterizar cada vuelo se utilizan 24 variables descritas a continuación:
+
+La información capturada contiene los detalles de todos los vuelos que discurren por los aeropuertos españoles en un momento dado. Los detalles de cada vuelo incluyen la información más elemental, como el número de vuelo, la fecha y la hora, y los aeropuertos de origen y destino. Pero además, se incluyen otros atributos a priori menos interesantes pero con potencial para realizar tareas de minería de datos a posteriori, como el modelo de avión o las previsiones climáticas para los lugares de origen y destino.
+
+En total, para caracterizar cada vuelo hemos encontrado un total de 24 atributos, aunque no siempre están presentes, sobre todo cuando se trata de aeropuertos internacionales.:
 
 | Campo | Descripción | Tipo de dato | Muestra |
 | ----- | ----------- | ---- | ------- |
@@ -39,10 +55,6 @@ Para caracterizar cada vuelo se utilizan 24 variables descritas a continuación:
 Con el propósito de recoger la información lo más completa posible se realizó el web scrapping cada 3 horas durante 3 días consecutivos, recopilando un total de 200kb. El código encargado de realizar esta operación fue desarrollado en Python 3.5 con la ayuda de la libreríaBeautifulSoup4. El período de tiempo de los datos es de 11/4/2018 hasta el 13/4/2018 y se obtuvieron un total de 2563 observaciones.
 
 ## Agradecimientos
-Viajar es una de las actividades preferidas de las personas. Sin importar el motivo, anualmente más de 3 mil millones de personas visitan diferentes destinos (Cantidad de viajeros). En el caso de los españoles, no solo seleccionan placeres internacionales. Según el Instituto Nacional de Estadística, en el año 2017, 6.298.419 españoles visitaron lares foráneos. Sin embargo, 57.693.025 locales, ya sea por motivos de trabajo o placer, se trasladaron dentro del país y de estos, más de 2 millones mediante el tercer medio más utilizado en España para estos fines, el transporte aéreo (Libro INE).
- Numerosos sitios existen en la web encargados de gestionar los vuelos de las diferentes areolíneas. La mayoría intenta facilitarle la gestión devuelos de los usuarios, quienes tienen diferentes expectativas y necesidades. Algunas se enfocan en la venta de boletos (https://www.iberia.com/), otras en comparar tarifas (https://www.kayak.com) y algunas contienen información interesante sobre el rendimiento de las aerolíneas (https://www.flightstats.com). En común tienen, sobre todo las dos últimas mencionadas, que utilizan datos de distintas fuentes para ofrecerle más información y poder de selección a los usuarios.
-  Aena SA y Aena Aeropuertos, es una empresa dedicada a gestionar los vuelos de los aeropuertos españoles. Esta, presenta un sitio web  (https://www.aena.es) que se encarga de proporcionar información de todos los vuelos que tienen relación con los aeropuertos españoles. Más allá de los precios, los datos que contiene el sitio refiere a elementos informativos referente al vuelo que pueden ayudar a mejorar la organización de los pasajeros.
- Los datos de de este sitio son bastante concretos y realizando los correctos análisis se puede obtener conocimiento adicional y de interés para mejorar la información que se brinde a los usuarios. Por tal motivo, se escogió el sitio de Aena para el trabajo.
 
 
 ## Inspiración
