@@ -2,7 +2,7 @@
 # Aena Info Vuelos
 > Información sobre vuelos en los aeropuertos españoles
 
-![alt text](resources/images/flight-board.png)
+![alt text](https://goo.gl/QpQcAF)
 
 # Contexto e inspiración
 
@@ -24,9 +24,6 @@ Este documento ofrece información sobre los datos obtenidos mediante la utiliza
 ## Descripción de los datos
 
 La información capturada contiene los detalles de todos los vuelos que discurren por los aeropuertos españoles en un momento dado. Los detalles de cada vuelo incluyen la información más elemental, como el número de vuelo, la fecha y la hora, y los aeropuertos de origen y destino. Pero además, se incluyen otros atributos a priori menos interesantes pero con potencial para realizar tareas de minería de datos a posteriori, como el modelo de avión o las previsiones climáticas para los lugares de origen y destino.
-
-La siguiente imagen muestra una captura de pantalla de la Web Infovuelos con la información de un vuelo en particular, lo que nos da idea del tipo de datos que vamos a capturar.
-![Detalles de un vuelo](resources/images/aena-flight-details-example.jpg)
 
 ### Estructura de los datos
 
@@ -59,10 +56,7 @@ En total, para caracterizar cada vuelo hemos encontrado un total de 24 atributos
 | arr_belt | Cinta de equipajes |Integer |	7 |
 | timestamp | Tiempo de captura | Datetime | 2018-04-12 23:42:0 8|
 
-### Origen de los datos. Intervalo y frecuencia de captura
-
-Los datos obtenidos proceden de todos los aeropuertos ubicados en territorio español gestionados por Aena, los cuales incluyen, a fecha de hoy (15/04/2018) 46 aeropuertos y 2 helipuertos.
-![Aeropuertos españoles](resources/images/spain-airports-map.jpg)
+### Intervalo y frecuencia de captura
 
 Con el propósito de ofrecer un ejemplo de la información que se obtiene ejecutando el proyecto, se incluye un fichero en formato *csv* con los datos obtenidos durante 48 horas consecutivas, a intervalos de una hora. Es decir, el proceso de scraping se repitió a intervalos regulares de una hora. El período de tiempo comprende desde el día 13/4/2018 hasta el 15/4/2018, y comprende un total de XXXX observaciones.
 
@@ -77,7 +71,7 @@ Sin embargo, podría existir otro tipo de usuario interesado en datos más gener
 - Descripción de los aeropuertos: analizando la información en detalle podríamos averiguar la estructuración de cada aeropuerto: número de terminales, número de salas, mostradores de facturación, etc.
 - En un segundo nivel de análisis, la aplicación de técnicas de minería de datos nos permitiría crear modelos predictivos para estimar por ejemplo, la probabilidad de que un vuelo se retrase en el futuro.
 
-En definitiva, la recopilación y tratamiento sistemático de los datos recopilados abre todo un abanico de posibilidades para extraer nuevo conocimiento, generar informes o responder preguntas que no es posible responder usando la información proporcionada por AENA a través de su portal de información al usuario ([Infovuelos](http://www.aena.es/csee/Satellite/infovuelos/es/).
+En definitiva, la recopilación y tratamiento sistemático de los datos recopilados abre todo un abanico de posibilidades para extraer nuevo conocimiento, generar informes o responder preguntas que no es posible responder usando la información proporcionada por AENA a través de su portal de información al usuario ([Infovuelos](http://www.aena.es/csee/Satellite/infovuelos/es/)).
 
 ## Licencia de distribución
 
