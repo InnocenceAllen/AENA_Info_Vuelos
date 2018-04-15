@@ -1,20 +1,13 @@
+import argparse
 import logging as log
-import sys
 import threading
 import time
 import datetime
 import queue
-import constants
+
 from info_vuelos.domain_model import Flight, Airport, FlightInfoMode, FlightType, Departure, Arrival, Weather
-from info_vuelos import util
+from info_vuelos import util, constants
 
-
-# global output
-# orig_stdout = sys.stdout
-# date = time.strftime("%d-%m-%Y_%I-%M")
-# f = open('flight' + date + '.csv', 'w')
-# sys.stdout = f
-# print(constants.HEADER)
 
 def get_airports(soup):
     airports = []
@@ -213,7 +206,7 @@ def obtainFlights(airports, filename, end_time, frequency):
         threading.Timer(frequency * 60, obtainFlights, [airports, filename, end_time]).start()
 
 
-def main(period = constants.SCRAPING_PERIOD, frequency = constants.SCRAPING_FRECUENCY):
+def main(period, frequency):
     filename = 'flights{}.csv'.format(time.strftime("%d-%m-%Y_%I-%M"))
     util.create_csv(filename, constants.DATA_FIELDS, constants.CSV_DELIMITER)
 
@@ -231,4 +224,15 @@ if __name__ == "__main__":
     log.basicConfig(filename='scrapping{}.log'.format(time.strftime("%d-%m-%Y_%I-%M")), level=log.WARNING,
                     format='%(asctime)s %(message)s',
                     datefmt='%d/%m/%Y %I:%M:%S')
-    main()
+    parser = argparse.ArgumentParser('Scrape flight info from AENA Infovuelos webpage')
+    parser.add_argument('-p','--period', help ='scraping period in hours')
+    parser.add_argument('-f','--frequency', help = 'scraping frecuency in minutes')
+    parser.add_argument("--verbose", help="increase output verbosity", action="store_true")
+    args = parser.parse_args()
+
+    period = int(args.period or constants.SCRAPING_PERIOD)
+    frequency = int(args.frequency or constants.SCRAPING_FRECUENCY)
+
+    print('Scraping period is {} hours'.format(period))
+    print('Scraping file is {} minutes'.format(frequency))
+    main(period, frequency)
