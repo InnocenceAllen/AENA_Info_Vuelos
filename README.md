@@ -4,7 +4,7 @@
 
 ![alt text](images/flight-board.png)
 
-# Contexto e inspiración
+# Contexto y origen de los datos
 
 Viajar es una de las actividades preferidas de las personas. Sin importar el motivo, anualmente más de 3 mil millones de personas visitan diferentes destinos (Cantidad de viajeros). En el caso de los españoles, no solo seleccionan placeres internacionales. Según el Instituto Nacional de Estadística, en el año 2017, 6.298.419 españoles visitaron lares foráneos. Sin embargo, 57.693.025 locales, ya sea por motivos de trabajo o placer, se trasladaron dentro del país y de estos, más de 2 millones mediante el tercer medio más utilizado en España para estos fines, el transporte aéreo (Libro INE).
 
@@ -21,7 +21,7 @@ La gestión de los aeropuertos y el tráfico aéreo en España recae en la empre
 
 Este documento ofrece información sobre los datos obtenidos mediante la utilización del software desarrollado en este proyecto. La información de naturaleza más técnica relacionada con el proyecto se puede consultar en la [Wiki](https://github.com/InnocenceAllen/AENA_Info_Vuelos/wiki/Home) asociada.
 
-## Descripción de los datos
+## Contenido
 
 La información capturada contiene los detalles de todos los vuelos que discurren por los aeropuertos españoles en un momento dado. Los detalles de cada vuelo incluyen la información más elemental, como el número de vuelo, la fecha y la hora, y los aeropuertos de origen y destino. Pero además, se incluyen otros atributos a priori menos interesantes pero con potencial para realizar tareas de minería de datos a posteriori, como el modelo de avión o las previsiones climáticas para los lugares de origen y destino.
 
@@ -59,7 +59,7 @@ En total, para caracterizar cada vuelo hemos encontrado un total de 24 atributos
 | arr_belt | Cinta de equipajes |Integer |	7 |
 | timestamp | Tiempo de captura | Datetime | 2018-04-12 23:42:0 8|
 
-### Origen de los datos. Intervalo y frecuencia de captura
+### Origen de los datos
 
 Los datos obtenidos proceden de todos los aeropuertos ubicados en territorio español gestionados por Aena, los cuales incluyen, a fecha de hoy (15/04/2018) 46 aeropuertos y 2 helipuertos. La siguiente imagen muestra la ubicación de los aeropuertos incluidos.
 
@@ -67,7 +67,7 @@ Los datos obtenidos proceden de todos los aeropuertos ubicados en territorio esp
 
 Con el propósito de ofrecer un ejemplo de la información que se obtiene ejecutando el proyecto, se incluye un fichero en formato *csv* con los datos obtenidos durante 48 horas consecutivas, a intervalos de una hora. Es decir, el proceso de scraping se repitió a intervalos regulares de una hora. El período de tiempo comprende desde el día 13/4/2018 hasta el 15/4/2018, y comprende un total de XXXX observaciones.
 
-## Usos potenciales de los datos obtenidos
+## Inspiración
 
 El viajero puede utilizar la Web de AENA para obtener información en tiempo real sobre su vuelo: terminal de salida o llegada, mostrador donde obtener tarjeta de embarque y facturar equipaje, sala de llegada en el destino, o detalles del clima en el lugar de destino de su viaje.
 
