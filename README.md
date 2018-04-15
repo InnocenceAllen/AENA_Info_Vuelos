@@ -65,7 +65,7 @@ Los datos obtenidos proceden de todos los aeropuertos ubicados en territorio esp
 
 ![Aeropuertos españoles](images/spain-airports-map.png)
 
-Con el propósito de ofrecer un ejemplo de la información que se obtiene ejecutando el proyecto, se incluye un fichero en formato *csv* con los datos obtenidos durante 48 horas consecutivas, a intervalos de una hora. Es decir, el proceso de scraping se repitió a intervalos regulares de una hora. El período de tiempo comprende desde el día 13/4/2018 a las 10:30 hasta el 15/4/2018 a las 22:30, y comprende un total de XXXX observaciones.
+Con el propósito de ofrecer un ejemplo de la información que se obtiene ejecutando el proyecto, se incluye un fichero en formato *csv* con los datos obtenidos durante 48 horas consecutivas, a intervalos de una hora. Es decir, el proceso de scraping se repitió a intervalos regulares de una hora. El período de tiempo comprende desde el día 13/4/2018 a las 10:30 hasta el 15/4/2018 a las 19:00, y comprende cerca de 40000 registros.
 
 ## Inspiración
 
@@ -86,3 +86,7 @@ El conjunto de datos obtenido se liberará bajo la licencia Attribution-NonComer
 Esta licencia da la libertad de compartir y adaptar el material mientras se de el crédito apropiado a los autores, se use el material con fines no comerciales y en caso de que se realicen transformaciones, las distribuciones se realicen bajo la misma licencia.
 
 >https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+## Notas
+
+Para ver las instrucciones de instalación y utilización del programa consultar la [Wiki](https://github.com/InnocenceAllen/AENA_Info_Vuelos/wiki/Home) de este proyecto.
