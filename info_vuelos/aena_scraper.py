@@ -215,7 +215,7 @@ def main(period, frequency):
     log.info(''.join(str(a) + '; ' for a in airports))
 
     current_time = datetime.datetime.now()
-    end_time = current_time + datetime.timedelta(hours=constants.SCRAPING_PERIOD)
+    end_time = current_time + datetime.timedelta(hours=period)
     obtainFlights(airports, filename, end_time, frequency)
     log.info('Scrapping flights finished at {}'.format(datetime.datetime.now()))
 

@@ -38,25 +38,25 @@ En total, para caracterizar cada vuelo hemos encontrado un total de 24 atributos
 | plane | Nombre del avión | String	| ATR-72 |
 | dep_date | Fecha de salida | Datetime	|13/04/18
 | dep_time | Hora de salida | Datetime	| 06:30
-| dep_airport_name | Nombre del aeropuerto de origen |String|	A Coruña|
-| dep_airport_code | Código del aeropuerto de origen |String|	LCG|
-| dep_terminal | Terminal de salida | Integer|	1|
-| dep_status | Estado de salida | String|	Salida prevista a las 07:00|
+| dep_airport_name | Nombre del aeropuerto de origen | String |	A Coruña|
+| dep_airport_code | Código del aeropuerto de origen | String |	LCG|
+| dep_terminal | Terminal de salida | String |	1 |
+| dep_status | Estado de salida | String |	Salida prevista a las 07:00|
 | dep_weather_min | Temperatura mínima en origen | Integer|	10|
-| dep_weather_max | Temperatura máxima en origen |Integer|	15|
-| dep_weather_desc | Descripción del clima en origen |String|	Nubosidad variable|
-| dep_counter | Mostrador de facturación |Integer|	6|
-| dep_door | Puerta de embarque |Integer|	7|
-| arr_date | Fecha de llegada |Datetime	|13/04/18|
-| arr_time | Hora de llegada |Datetime|	08:40|
-| arr_airport_name | Nombre del aeropuerto de destino |String|	Barcelona-El Prat|
-| arr_terminal | Terminal de destino |String|	T1|
+| dep_weather_max | Temperatura máxima en origen | Integer |	15|
+| dep_weather_desc | Descripción del clima en origen | String |	Nubosidad variable|
+| dep_counter | Mostrador de facturación | Integer |	6|
+| dep_door | Puerta de embarque | Integer |	7|
+| arr_date | Fecha de llegada | Datetime |13/04/18|
+| arr_time | Hora de llegada | Datetime |	08:40|
+| arr_airport_name | Nombre del aeropuerto de destino | String | Barcelona-El Prat|
+| arr_terminal | Terminal de destino | String |	T1|
 | arr_status | Estado de llegada |String|	Llegada prevista a las 08:40|
-| arr_weather_min | Temperatura mínima en destino |Integer|	12|
-| arr_weather_max | Temperatura máxima en destino |Integer|	17|
-| arr_weather_desc | Descripción del clima en destino |String |	Lluvia débil|
+| arr_weather_min | Temperatura mínima en destino | Integer |	12|
+| arr_weather_max | Temperatura máxima en destino | Integer |	17|
+| arr_weather_desc | Descripción del clima en destino | String |	Lluvia débil|
 | arr_room | Sala de recepción | String |	T1_G |
-| arr_belt | Cinta de equipajes |Integer |	7 |
+| arr_belt | Cinta de equipajes | Integer |	7 |
 | timestamp | Tiempo de captura | Datetime | 2018-04-12 23:42:0 8|
 
 ### Origen de los datos
@@ -65,7 +65,7 @@ Los datos obtenidos proceden de todos los aeropuertos ubicados en territorio esp
 
 ![Aeropuertos españoles](images/spain-airports-map.png)
 
-Con el propósito de ofrecer un ejemplo de la información que se obtiene ejecutando el proyecto, se incluye un fichero en formato *csv* con los datos obtenidos durante 48 horas consecutivas, a intervalos de una hora. Es decir, el proceso de scraping se repitió a intervalos regulares de una hora. El período de tiempo comprende desde el día 13/4/2018 hasta el 15/4/2018, y comprende un total de XXXX observaciones.
+Con el propósito de ofrecer un ejemplo de la información que se obtiene ejecutando el proyecto, se incluye un fichero en formato *csv* con los datos obtenidos durante 48 horas consecutivas, a intervalos de una hora. Es decir, el proceso de scraping se repitió a intervalos regulares de una hora. El período de tiempo comprende desde el día 13/4/2018 a las 10:30 hasta el 15/4/2018 a las 22:30, y comprende un total de XXXX observaciones.
 
 ## Inspiración
 
