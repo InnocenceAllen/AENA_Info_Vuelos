@@ -1,9 +1,9 @@
 import logging as log
+import sys
 import threading
 import time
 import datetime
 import queue
-
 import constants
 from info_vuelos.domain_model import Flight, Airport, FlightInfoMode, FlightType, Departure, Arrival, Weather
 from info_vuelos import util
@@ -187,7 +187,7 @@ def drain(q):
     except queue.Empty:
       break
 
-def obtainFlights(airports, filename, end_time):
+def obtainFlights(airports, filename, end_time, frequency):
     log.info('Scrapping flights starting at {}'.format(datetime.datetime.now()))
     print('\n********** SCRAPING CYCLE STARTED: {}\n'.format(datetime.datetime.now()))
     pool = []
@@ -210,10 +210,10 @@ def obtainFlights(airports, filename, end_time):
     print('\n********** SCRAPING CYCLE COMPLETED: {}\n'.format(datetime.datetime.now()))
 
     if (datetime.datetime.now() < end_time):
-        threading.Timer(constants.SCRAPING_FRECUENCY * 60, obtainFlights, [airports, filename, end_time]).start()
+        threading.Timer(frequency * 60, obtainFlights, [airports, filename, end_time]).start()
 
 
-def main():
+def main(period = constants.SCRAPING_PERIOD, frequency = constants.SCRAPING_FRECUENCY):
     filename = 'flights{}.csv'.format(time.strftime("%d-%m-%Y_%I-%M"))
     util.create_csv(filename, constants.DATA_FIELDS, constants.CSV_DELIMITER)
 
@@ -222,8 +222,8 @@ def main():
     log.info(''.join(str(a) + '; ' for a in airports))
 
     current_time = datetime.datetime.now()
-    end_time = current_time + datetime.timedelta(days=7)
-    obtainFlights(airports, filename, end_time)
+    end_time = current_time + datetime.timedelta(hours=constants.SCRAPING_PERIOD)
+    obtainFlights(airports, filename, end_time, frequency)
     log.info('Scrapping flights finished at {}'.format(datetime.datetime.now()))
 
 
