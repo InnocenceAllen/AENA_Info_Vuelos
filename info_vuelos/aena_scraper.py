@@ -46,7 +46,7 @@ def getFlightDetails(relativeUrl, flightInfoMode):
     soup = util.getDetails(relativeUrl)
     table = soup.find("table")
     try:
-        plane = table.caption.span.contents[1]
+        plane = table.caption.span.contents[1].strip()
 
         theads = table.find_all("thead")
         tbodys = table.find_all("tbody")
@@ -213,6 +213,9 @@ def main(period, frequency):
     airports = get_airports(util.getAirportsContent())
     log.info('Scrapping airport names')
     log.info(''.join(str(a) + '; ' for a in airports))
+
+    #util.create_csv("airports.csv", ['airport_name', 'airport_code'], constants.CSV_DELIMITER)
+    #util.save_to_csv("airports.csv", airports)
 
     current_time = datetime.datetime.now()
     end_time = current_time + datetime.timedelta(hours=period)

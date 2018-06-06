@@ -64,7 +64,7 @@ class Flight:
         return '{} from {} to {}'.format(self.flightNumber, self.departure, self.arrival)
 
     def __repr__(self):
-        return '{};{};{};{};{}'.format(self.flightNumber, self.plane, repr(self.departure), repr(self.arrival),
+        return '{};{};{};{};{};{}'.format(self.flightNumber, self.company, self.plane, repr(self.departure), repr(self.arrival),
                                        self.timestamp)
 
     def __eq__(self, other):
