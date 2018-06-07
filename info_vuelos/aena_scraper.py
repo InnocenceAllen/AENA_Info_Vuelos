@@ -203,7 +203,7 @@ def obtainFlights(airports, filename, end_time, frequency):
     print('\n********** SCRAPING CYCLE COMPLETED: {}\n'.format(datetime.datetime.now()))
 
     if (datetime.datetime.now() < end_time):
-        threading.Timer(frequency * 60, obtainFlights, [airports, filename, end_time]).start()
+        threading.Timer(frequency * 60, obtainFlights, [airports, filename, end_time, frequency]).start()
 
 
 def main(period, frequency):
