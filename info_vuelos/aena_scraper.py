@@ -207,7 +207,7 @@ def obtainFlights(airports, filename, end_time, frequency):
 
 
 def main(period, frequency):
-    filename = 'flights{}.csv'.format(time.strftime("%d-%m-%Y_%I-%M"))
+    filename = 'flights{}.csv'.format(time.strftime("%d-%m-%Y_%H-%M"))
     util.create_csv(filename, constants.DATA_FIELDS, constants.CSV_DELIMITER)
 
     airports = get_airports(util.getAirportsContent())
@@ -224,9 +224,9 @@ def main(period, frequency):
 
 
 if __name__ == "__main__":
-    log.basicConfig(filename='scrapping{}.log'.format(time.strftime("%d-%m-%Y_%I-%M")), level=log.WARNING,
+    log.basicConfig(filename='scrapping{}.log'.format(time.strftime("%d-%m-%Y_%H-%M")), level=log.WARNING,
                     format='%(asctime)s %(message)s',
-                    datefmt='%d/%m/%Y %I:%M:%S')
+                    datefmt='%d/%m/%Y %H:%M:%S')
     parser = argparse.ArgumentParser('Scrape flight info from AENA Infovuelos webpage')
     parser.add_argument('-p','--period', help ='scraping period in hours')
     parser.add_argument('-f','--frequency', help = 'scraping frecuency in minutes')
